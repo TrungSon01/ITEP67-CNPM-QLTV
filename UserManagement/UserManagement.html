@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LM Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="UserManagement.css" />
+  </head>
+
+  <body id="body">
+    <!-- Navbar -->
+    <div class="l-navbar show" id="navbar">
+      <div class="nav">
+        <div>
+          <a href="#" class="nav_logo">
+            <ion-icon name="library" class="nav-logo-icon"></ion-icon>
+            <span class="nav_logo-text">LM Systems</span>
+          </a>
+          <div class="nav_toggle" id="nav_toggle">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </div>
+          <ul class="nav_list">
+            <a href="#" class="nav_link active">
+              <ion-icon name="home" class="nav_icon"></ion-icon>
+              <span class="nav_text">Home</span>
+            </a>
+
+            <a href="#" class="nav_link" onclick="loadBookManagement()">
+              <ion-icon name="book" class="nav_icon"></ion-icon>
+              <span class="nav_text">Book Management</span>
+            </a>
+
+            <a href="#" class="nav_link">
+              <ion-icon name="people" class="nav_icon"></ion-icon>
+              <span class="nav_text">User Management</span>
+            </a>
+
+            <a href="#" class="nav_link">
+              <ion-icon name="receipt" class="nav_icon"></ion-icon>
+              <span class="nav_text">Book Borrow Slip</span>
+            </a>
+            <a href="#" class="nav_link">
+              <ion-icon name="reader" class="nav_icon"></ion-icon>
+              <span class="nav_text">Book Return Slip</span>
+            </a>
+            <a href="#" class="nav_link">
+              <ion-icon name="create" class="nav_icon"></ion-icon>
+              <span class="nav_text">Report & Analytics</span>
+            </a>
+          </ul>
+        </div>
+        <div>
+          <a href="../loginRegister/loginRegister.html" class="nav_link" id="logout">
+            <ion-icon name="log-out" class="nav_icon"></ion-icon>
+            <span class="nav_text">Logout</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Dropdown menu profile -->
+    <div class="menu-profile">
+      <div class="menu-profile-icon">
+        <ion-icon name="notifications" class="noti-icon"></ion-icon>
+        <img src="../Assets/user0.png" class="user-pic" id="userpic" />
+      </div>
+      <div class="drop-menu-profile" id="drop-menu-profile">
+        <a id="username" href="#">
+          <img src="../Assets/user0.png" class="user-pic-in" />Username0
+        </a>
+        <a href="#"> <ion-icon name="person"></ion-icon> Profile </a>
+        <a href="#"> <ion-icon name="settings"></ion-icon> Settings </a>
+        <a href="#">
+          <ion-icon name="help-circle"></ion-icon> Help & Support
+        </a>
+        <a href="#">
+          <ion-icon name="swap-horizontal"></ion-icon> Convert Account
+        </a>
+      </div>
+    </div>
+    <!-- management user-->
+    <div class="container">
+        <h1>Library User Management</h1>
+    
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search by UserID or Name">
+          <button onclick="searchUser()">Search</button>
+        </div>
+    
+        <!-- Add User Button -->
+        <button id="addUserBtn" onclick="openAddUserModal()">Add User</button>
+    
+        <!-- User Table -->
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>UserID</th>
+              <th>AccountID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic user rows will be added here via JS -->
+          </tbody>
+        </table>
+      </div>
+    
+      <!-- User Details Modal -->
+      <div id="userDetailsModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal('userDetailsModal')">&times;</span>
+          <h2>User Details</h2>
+          <p><strong>UserID:</strong> <span id="userId"></span></p>
+          <p><strong>Name:</strong> <span id="userName"></span></p>
+    
+          <h3>Borrowed Books</h3>
+          <table id="borrowedBooksTable">
+            <thead>
+              <tr>
+                <th>BookID</th>
+                <th>Title</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Borrowed books rows -->
+            </tbody>
+          </table>
+    
+          <button onclick="addBorrowedBook()">Add Book</button>
+        </div>
+      </div>
+    
+    
+    <script src="UserManagement.js"></script>
+    <script src="../Home/home.js"></script>
+    <script src="../Home/loadContent.js"></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+  </body>
+</html>
