@@ -93,13 +93,23 @@
     <div class="flex justify-between items-center p-6 bg-gray-50">
       <div class="flex items-center gap-4">
         <h2 class="text-xl font-semibold text-gray-700">Danh Sách Sách</h2>
+        <div class="relative">
+          <select
+            id="rowsPerPage"
+            class="form-select rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring focus:ring-green-200"
+          >
+            <option value="5">5 dòng</option>
+            <option value="10" selected>10 dòng</option>
+            <option value="20">20 dòng</option>
+          </select>
+        </div>
         <div class="dropdown">
           <button
             onclick="toggleDropdown()"
-            class="bg-green-500 text-white p-3 rounded-full hover:bg-green-600 transition duration-300"
+            class="bg-green-500 text-white p-3 rounded-full hover:bg-yellow-500 transition duration-400"
             title="Tùy chọn"
           >
-            <i class="fa fa-book-open text-xl"></i>
+            <i class="fa fa-book-open text-base"></i>
           </button>
           <div id="bookDropdown" class="dropdown-content">
             <a href="#" onclick="showAddModal()">
@@ -110,6 +120,15 @@
             </a>
           </div>
         </div>
+      </div>
+      <div class="relative">
+        <i class="fa fa-search text-2xl text-green-500"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Tìm kiếm sách..."
+          class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
       </div>
     </div>
     <div class="overflow-x-auto">
@@ -139,6 +158,11 @@
             <th
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
+              Số Lượng Còn
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Ngày xuất bản
             </th>
           </tr>
@@ -147,6 +171,37 @@
           <!-- Sách sẽ được thêm vào đây bằng JavaScript -->
         </tbody>
       </table>
+    </div>
+
+    <div class="flex items-center justify-between px-6 py-3 bg-gray-50">
+      <div class="flex items-center">
+        <span class="text-sm text-gray-700">
+          Hiển thị
+          <span id="startRow" class="font-medium">1</span>
+          đến
+          <span id="endRow" class="font-medium">10</span>
+          của
+          <span id="totalRows" class="font-medium">0</span>
+          kết quả
+        </span>
+      </div>
+      <div class="flex gap-2">
+        <button
+          id="prevPage"
+          class="px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
+        >
+          Trước
+        </button>
+        <div id="pageNumbers" class="flex gap-1">
+          <!-- Page numbers will be inserted here -->
+        </div>
+        <button
+          id="nextPage"
+          class="px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
+        >
+          Sau
+        </button>
+      </div>
     </div>
   </div>
 
@@ -214,6 +269,30 @@
             type="date"
             id="date"
             required
+            class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Tổng số lượng</label
+          >
+          <input
+            type="number"
+            id="totalQuantity"
+            required
+            min="0"
+            class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Số lượng còn lại</label
+          >
+          <input
+            type="number"
+            id="availableQuantity"
+            required
+            min="0"
             class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
@@ -304,6 +383,30 @@
             class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Tổng số lượng</label
+          >
+          <input
+            type="number"
+            id="updateTotalQuantity"
+            required
+            min="0"
+            class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Số lượng còn lại</label
+          >
+          <input
+            type="number"
+            id="updateAvailableQuantity"
+            required
+            min="0"
+            class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
         <div class="flex justify-end space-x-3 mt-4">
           <button
             type="button"
@@ -342,7 +445,22 @@
       </div>
       <div class="space-y-4">
         <div class="book-detail-content">
-          <!-- Thông tin chi tiết sẽ đợc thêm vào đây -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="font-medium text-gray-500">Tên sách:</div>
+            <div>${book.name}</div>
+            <div class="font-medium text-gray-500">Tác giả:</div>
+            <div>${book.author}</div>
+            <div class="font-medium text-gray-500">Thể loại:</div>
+            <div>${book.category}</div>
+            <div class="font-medium text-gray-500">Ngày xuất bản:</div>
+            <div>${book.date}</div>
+            <div class="font-medium text-gray-500">Tổng số lượng:</div>
+            <div>${book.totalQuantity}</div>
+            <div class="font-medium text-gray-500">Số lượng còn lại:</div>
+            <div>${book.availableQuantity}</div>
+            <div class="font-medium text-gray-500">Mô tả:</div>
+            <div class="col-span-2">${book.description}</div>
+          </div>
         </div>
         <div class="flex justify-end space-x-3 mt-6">
           <button

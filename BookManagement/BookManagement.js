@@ -1,6 +1,11 @@
 const API_URL = "/api/books";
 
 let currentBookId = null;
+let currentPage = 1;
+let rowsPerPage = 10;
+let totalPages = 1;
+let allBooks = [];
+let filteredBooks = [];
 
 // Load sách khi trang được tải
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,38 +21,127 @@ function fetchBooks() {
       return response.json();
     })
     .then((books) => {
-      const tableBody = document.querySelector("#bookTable tbody");
-      tableBody.innerHTML = "";
-
-      books.forEach((book, index) => {
-        const row = document.createElement("tr");
-        row.className = "hover:bg-gray-50 cursor-pointer";
-        row.innerHTML = `
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-            index + 1
-          }</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-            book.name
-          }</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-            book.author
-          }</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-            book.category
-          }</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-            book.date
-          }</td>
-        `;
-        row.addEventListener("click", () => showBookDetail(book.id));
-        tableBody.appendChild(row);
-      });
+      allBooks = books;
+      filteredBooks = [];
+      updateTableDisplay();
     })
     .catch((error) => {
       console.error("Error:", error);
       alert("Không thể tải danh sách sách: " + error.message);
     });
 }
+
+// Hàm cập nhật hiển thị bảng
+function updateTableDisplay() {
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const booksToShow = filteredBooks.length > 0 ? filteredBooks : allBooks;
+  const endIndex = Math.min(startIndex + rowsPerPage, booksToShow.length);
+  const displayedBooks = booksToShow.slice(startIndex, endIndex);
+
+  const tableBody = document.querySelector("#bookTable tbody");
+  tableBody.innerHTML = "";
+
+  displayedBooks.forEach((book, index) => {
+    const row = document.createElement("tr");
+    row.className = "hover:bg-gray-50 cursor-pointer";
+    row.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+        startIndex + index + 1
+      }</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+        book.name
+      }</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+        book.author
+      }</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+        book.category
+      }</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+        book.availableQuantity
+      }</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+        book.date
+      }</td>
+    `;
+    row.addEventListener("click", () => showBookDetail(book.id));
+    tableBody.appendChild(row);
+  });
+
+  updatePagination(booksToShow.length);
+}
+
+// Hàm cập nhật thông tin phân trang
+function updatePagination(totalBooks) {
+  totalPages = Math.ceil(totalBooks / rowsPerPage);
+  const startRow = (currentPage - 1) * rowsPerPage + 1;
+  const endRow = Math.min(currentPage * rowsPerPage, totalBooks);
+
+  document.getElementById("startRow").textContent = totalBooks ? startRow : 0;
+  document.getElementById("endRow").textContent = endRow;
+  document.getElementById("totalRows").textContent = totalBooks;
+
+  const pageNumbers = document.getElementById("pageNumbers");
+  pageNumbers.innerHTML = "";
+
+  // Hiển thị các nút số trang
+  for (let i = 1; i <= totalPages; i++) {
+    const pageButton = document.createElement("button");
+    pageButton.className = `px-3 py-1 rounded-md ${
+      i === currentPage
+        ? "bg-green-500 text-white"
+        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+    }`;
+    pageButton.textContent = i;
+    pageButton.addEventListener("click", () => {
+      currentPage = i;
+      updateTableDisplay();
+    });
+    pageNumbers.appendChild(pageButton);
+  }
+
+  // Cập nhật trạng thái nút Trước/Sau
+  document.getElementById("prevPage").disabled = currentPage === 1;
+  document.getElementById("nextPage").disabled = currentPage === totalPages;
+}
+
+// Thêm event listeners cho các nút điều hướng
+document.getElementById("prevPage").addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    updateTableDisplay();
+  }
+});
+
+document.getElementById("nextPage").addEventListener("click", () => {
+  if (currentPage < totalPages) {
+    currentPage++;
+    updateTableDisplay();
+  }
+});
+
+// Thêm event listener cho dropdown chọn số dòng
+document.getElementById("rowsPerPage").addEventListener("change", (e) => {
+  rowsPerPage = parseInt(e.target.value);
+  currentPage = 1; // Reset về trang đầu tiên
+  updateTableDisplay();
+});
+
+// Thêm event listener cho ô tìm kiếm
+document.getElementById("searchInput").addEventListener("input", function (e) {
+  const searchTerm = e.target.value.toLowerCase();
+
+  // Lọc sách dựa trên từ khóa tìm kiếm
+  filteredBooks = allBooks.filter(
+    (book) =>
+      book.name.toLowerCase().includes(searchTerm) ||
+      book.author.toLowerCase().includes(searchTerm) ||
+      book.category.toLowerCase().includes(searchTerm)
+  );
+
+  currentPage = 1; // Reset về trang 1 khi tìm kiếm
+  updateTableDisplay();
+});
 
 // Thêm các hàm xử lý modal chi tiết
 function showBookDetail(id) {
@@ -66,6 +160,10 @@ function showBookDetail(id) {
           <div>${book.category}</div>
           <div class="font-medium text-gray-500">Ngày xuất bản:</div>
           <div>${book.date}</div>
+          <div class="font-medium text-gray-500">Tổng số lượng:</div>
+          <div>${book.totalQuantity}</div>
+          <div class="font-medium text-gray-500">Số lượng còn lại:</div>
+          <div>${book.availableQuantity}</div>
           <div class="font-medium text-gray-500">Mô tả:</div>
           <div class="col-span-2">${book.description}</div>
         </div>
@@ -100,7 +198,17 @@ document.getElementById("bookForm").addEventListener("submit", function (e) {
     category: document.getElementById("category").value,
     description: document.getElementById("description").value,
     date: document.getElementById("date").value,
+    totalQuantity: parseInt(document.getElementById("totalQuantity").value),
+    availableQuantity: parseInt(
+      document.getElementById("availableQuantity").value
+    ),
   };
+
+  // Kiểm tra logic số lượng
+  if (newBook.availableQuantity > newBook.totalQuantity) {
+    alert("Số lượng còn lại không thể lớn hơn tổng số lượng!");
+    return;
+  }
 
   fetch(API_URL, {
     method: "POST",
@@ -110,8 +218,13 @@ document.getElementById("bookForm").addEventListener("submit", function (e) {
     body: JSON.stringify(newBook),
   })
     .then((response) => {
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        return response.json().then((err) => {
+          throw new Error(
+            err.message || `HTTP error! status: ${response.status}`
+          );
+        });
+      }
       return response.json();
     })
     .then((data) => {
@@ -122,7 +235,7 @@ document.getElementById("bookForm").addEventListener("submit", function (e) {
     })
     .catch((error) => {
       console.error("Error:", error);
-      alert("Lỗi khi thêm s��ch: " + error.message);
+      alert(error.message || "Lỗi khi thêm sách");
     });
 });
 
@@ -141,6 +254,9 @@ function showUpdateModal(id) {
       document.getElementById("updateCategory").value = book.category;
       document.getElementById("updateDescription").value = book.description;
       document.getElementById("updateDate").value = book.date;
+      document.getElementById("updateTotalQuantity").value = book.totalQuantity;
+      document.getElementById("updateAvailableQuantity").value =
+        book.availableQuantity;
       showModal("updateModal");
     })
     .catch((error) => {

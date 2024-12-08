@@ -181,12 +181,34 @@ app.post("/api/books", (req, res) => {
       !newBook.author ||
       !newBook.category ||
       !newBook.description ||
-      !newBook.date
+      !newBook.date ||
+      !newBook.totalQuantity ||
+      !newBook.availableQuantity
     ) {
       return res.status(400).json({ message: "Thông tin sách chưa đầy đủ" });
     }
 
+    // Kiểm tra logic số lượng
+    if (newBook.availableQuantity > newBook.totalQuantity) {
+      return res.status(400).json({
+        message: "Số lượng còn lại không thể lớn hơn tổng số lượng",
+      });
+    }
+
+    // Đọc dữ liệu hiện tại
     const data = readData_book();
+
+    // Kiểm tra trùng tên sách (không phân biệt hoa thường)
+    const bookExists = data.book.some(
+      (book) => book.name.toLowerCase() === newBook.name.toLowerCase()
+    );
+
+    if (bookExists) {
+      return res.status(409).json({
+        message: "Sách này đã tồn tại trong thư viện!",
+      });
+    }
+
     const newId = data.book.length
       ? Math.max(...data.book.map((b) => b.id)) + 1
       : 1;
