@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const multer = require("multer");
 const app = express();
 const PORT = 3000;
 
@@ -17,12 +18,21 @@ app.use(
   "/BookManagement",
   express.static(path.join(__dirname, "BookManagement"))
 );
+app.use("/Report", express.static(path.join(__dirname, "Report & Analytics")));
 app.use(express.static(path.join(__dirname, "loginRegister")));
 app.use(express.static(path.join(__dirname, "Home")));
 
 // Path to data files
 const DATA_FILE = path.join(__dirname, "data.json");
 const DATA_FILE_BOOK = path.join(__dirname, "BookManagement", "data_book.json");
+console.log("Book data file path:", DATA_FILE_BOOK);
+
+try {
+  fs.accessSync(DATA_FILE_BOOK, fs.constants.R_OK | fs.constants.W_OK);
+  console.log("File data_book.json is readable and writable");
+} catch (err) {
+  console.error("No access to data_book.json:", err);
+}
 
 // Kiểm tra và tạo file data.json nếu chưa tồn tại
 if (!fs.existsSync(DATA_FILE)) {
@@ -64,7 +74,12 @@ function writeData(data) {
 
 function readData_book() {
   try {
-    return JSON.parse(fs.readFileSync(DATA_FILE_BOOK, "utf8"));
+    console.log("Reading book data from:", DATA_FILE_BOOK);
+    const data = fs.readFileSync(DATA_FILE_BOOK, "utf8");
+    console.log("Raw data:", data);
+    const parsedData = JSON.parse(data);
+    console.log("Parsed data:", parsedData);
+    return parsedData;
   } catch (error) {
     console.error("Error reading book data:", error);
     return { book: [] };
@@ -142,14 +157,16 @@ app.get("/BookManagement", (req, res) => {
   res.sendFile(path.join(__dirname, "BookManagement", "BookManagement.html"));
 });
 
-app.get("/BookManagement/content", (req, res) => {
-  res.sendFile(path.join(__dirname, "BookManagement", "content.html"));
+app.get("/BookManagement/BookManagement.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "BookManagement", "BookManagement.html"));
 });
 
 app.get("/api/books", (req, res) => {
   try {
+    console.log("GET /api/books called");
     const data = readData_book();
-    res.json(data.book);
+    console.log("Sending books:", data.book);
+    res.json(data.book || []);
   } catch (error) {
     console.error("Error getting books:", error);
     res.status(500).json({ message: "Lỗi khi lấy danh sách sách" });
@@ -160,7 +177,7 @@ app.get("/api/books/:id", (req, res) => {
   try {
     const bookId = parseInt(req.params.id);
     const data = readData_book();
-    const book = data.book.find((b) => b.id === bookId);
+    const book = data.book.find((b) => b.bookId === bookId);
 
     if (!book) {
       return res.status(404).json({ message: "Không tìm thấy sách" });
@@ -176,50 +193,30 @@ app.get("/api/books/:id", (req, res) => {
 app.post("/api/books", (req, res) => {
   try {
     const newBook = req.body;
-    if (
-      !newBook.name ||
-      !newBook.author ||
-      !newBook.category ||
-      !newBook.description ||
-      !newBook.date ||
-      !newBook.totalQuantity ||
-      !newBook.availableQuantity
-    ) {
-      return res.status(400).json({ message: "Thông tin sách chưa đầy đủ" });
-    }
-
-    // Kiểm tra logic số lượng
-    if (newBook.availableQuantity > newBook.totalQuantity) {
-      return res.status(400).json({
-        message: "Số lượng còn lại không thể lớn hơn tổng số lượng",
-      });
-    }
-
-    // Đọc dữ liệu hiện tại
     const data = readData_book();
 
-    // Kiểm tra trùng tên sách (không phân biệt hoa thường)
-    const bookExists = data.book.some(
-      (book) => book.name.toLowerCase() === newBook.name.toLowerCase()
-    );
+    const maxId = Math.max(...data.book.map((b) => b.bookId), 0);
+    newBook.bookId = maxId + 1;
 
-    if (bookExists) {
-      return res.status(409).json({
-        message: "Sách này đã tồn tại trong thư viện!",
-      });
-    }
+    const bookToAdd = {
+      bookId: newBook.bookId,
+      title: newBook.name,
+      category: newBook.category,
+      author: newBook.author,
+      publishDate: newBook.date,
+      imageLink: newBook.imageLink || "/Assets/default-book.png",
+      description: newBook.description || null,
+      quantityTotal: newBook.totalQuantity,
+      quantityValid: newBook.availableQuantity,
+      rate: newBook.rate || 0,
+    };
 
-    const newId = data.book.length
-      ? Math.max(...data.book.map((b) => b.id)) + 1
-      : 1;
-    newBook.id = newId;
-
-    data.book.push(newBook);
+    data.book.push(bookToAdd);
     writeData_book(data);
-    res.status(201).json(newBook);
+    res.status(201).json(bookToAdd);
   } catch (error) {
     console.error("Error adding book:", error);
-    res.status(500).json({ message: "Lỗi khi thêm sách" });
+    res.status(500).json({ message: "L���i khi thêm sách" });
   }
 });
 
@@ -228,17 +225,25 @@ app.put("/api/books/:id", (req, res) => {
     const bookId = parseInt(req.params.id);
     const updatedBook = req.body;
     const data = readData_book();
-    const bookIndex = data.book.findIndex((book) => book.id === bookId);
+    const bookIndex = data.book.findIndex((book) => book.bookId === bookId);
 
     if (bookIndex === -1) {
       return res.status(404).json({ message: "Không tìm thấy sách" });
     }
 
+    // Cập nhật thông tin sách
     data.book[bookIndex] = {
       ...data.book[bookIndex],
-      ...updatedBook,
-      id: bookId,
+      title: updatedBook.title,
+      category: updatedBook.category,
+      author: updatedBook.author,
+      publishDate: updatedBook.publishDate,
+      imageLink: updatedBook.imageLink,
+      description: updatedBook.description,
+      quantityTotal: updatedBook.quantityTotal,
+      quantityValid: updatedBook.quantityValid,
     };
+
     writeData_book(data);
     res.json(data.book[bookIndex]);
   } catch (error) {
@@ -265,7 +270,57 @@ app.delete("/api/books/:id", (req, res) => {
     res.status(500).json({ message: "Lỗi khi xóa sách" });
   }
 });
+const upload = multer({
+  dest: path.join(__dirname, "Assets", "book-images"),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // giới hạn 5MB
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Chỉ chấp nhận file hình ảnh"));
+    }
+  },
+});
+
+// API upload ảnh
+app.post("/api/upload", upload.single("image"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Không có file được upload" });
+    }
+
+    // Tạo đường dẫn tương đối cho file
+    const relativePath = `/Assets/book-images/${req.file.filename}`;
+
+    res.json({
+      imageUrl: relativePath,
+    });
+  } catch (error) {
+    console.error("Error handling upload:", error);
+    res.status(500).json({ message: "Lỗi khi upload file" });
+  }
+});
+
+// Thêm middleware phục vụ thư mục chứa ảnh sách
+app.use(
+  "/Assets/book-images",
+  express.static(path.join(__dirname, "Assets", "book-images"))
+);
+
 // ========================================== END BOOK MANAGEMENT APIs ================================
+
+//========================================= RP AND ANALYTICS APIs ================================
+
+// Route cho Report & Analytics
+app.get("/Report/ReportAnalytics.html", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "Report & Analytics", "ReportAnalytics.html")
+  );
+});
+
+//========================================= END RP AND ANALYTICS APIs ================================
 
 // Start server
 app.listen(PORT, () => {

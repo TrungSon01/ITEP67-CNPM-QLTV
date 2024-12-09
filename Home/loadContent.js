@@ -1,6 +1,6 @@
 function loadBookManagement() {
   console.log("Loading Book Management...");
-  fetch("/BookManagement/content")
+  fetch("/BookManagement/BookManagement.html")
     .then((response) => {
       console.log("Content loaded, status:", response.status);
       if (!response.ok) {
@@ -12,23 +12,13 @@ function loadBookManagement() {
       console.log("Setting up content...");
       document.getElementById("mainContent").innerHTML = html;
 
-      const oldScript = document.querySelector(
-        'script[src="/BookManagement/BookManagement.js"]'
-      );
-      if (oldScript) {
-        console.log("Removing old script...");
-        oldScript.remove();
-      }
-
-      console.log("Loading new script...");
+      // Load script và khởi tạo dữ liệu
       const script = document.createElement("script");
       script.src = "/BookManagement/BookManagement.js";
       script.onload = function () {
-        console.log("Script loaded, fetching books...");
-        if (typeof fetchBooks === "function") {
-          fetchBooks();
-        } else {
-          console.error("fetchBooks function not found!");
+        // Đảm bảo fetchBooks được gọi sau khi script đã load
+        if (typeof initializeUI === "function") {
+          initializeUI();
         }
       };
       document.body.appendChild(script);
@@ -37,5 +27,26 @@ function loadBookManagement() {
       console.error("Lỗi khi tải trang:", error);
       document.getElementById("mainContent").innerHTML =
         "<p>Không thể tải nội dung. Vui lòng thử lại sau.</p>";
+    });
+}
+
+function loadReport() {
+  console.log("Loading Report & Analytics...");
+  fetch("/Report/ReportAnalytics.html")
+    .then((response) => {
+      console.log("Content loaded, status:", response.status);
+      if (!response.ok) {
+        throw new Error("Mạng lỗi, không thể tải file");
+      }
+      return response.text();
+    })
+    .then((html) => {
+      console.log("Setting up report content...");
+      document.getElementById("mainContent").innerHTML = html;
+    })
+    .catch((error) => {
+      console.error("Lỗi khi tải trang:", error);
+      document.getElementById("mainContent").innerHTML =
+        "<p>Không thể tải nội dung báo cáo. Vui lòng thử lại sau.</p>";
     });
 }
