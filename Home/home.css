@@ -4,7 +4,13 @@
   --first-color: black;
   --second-color: #f5a623;
   --white-color: #ededed;
+
   --body-font: "Poppins", sans-serif;
+  --small-font-size: 0.875rem;
+
+  @media screen and (min-width: 768px) {
+    --small-font-size: 0.638rem;
+  }
 }
 
 :root {
@@ -23,10 +29,13 @@
 
 body {
   position: relative;
-  margin: 0;
-  padding: 0;
+  margin: 0.5rem;
+  padding: 1rem 0 0 16rem;
+  padding-left: 228px;
   font-family: var(--body-font);
+  min-height: 100vh;
   background: var(--white-color);
+  transition: 0.5s;
 }
 
 h1 {
@@ -48,12 +57,12 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 58px;
   height: 100vh;
-  background: var(--first-color);
-  padding: 1rem;
+  background: black;
+  padding: 1.25rem 0.5rem 2rem;
   transition: 0.5s;
-  z-index: 100;
+  z-index: var(--z-fixed);
 }
 
 .nav {
@@ -61,7 +70,8 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .nav_logo {
@@ -104,22 +114,20 @@ a {
   transition: 0.5s;
 }
 
-.nav_list {
-  padding-top: 2rem;
-}
-
 .nav_link {
+  position: relative;
+  top: 40px;
   display: flex;
   align-items: center;
-  padding: 0.8rem;
-  color: var(--white-color);
-  transition: 0.3s;
+  padding: 0.5rem;
+  margin-bottom: 1.2rem;
   border-radius: 0.5rem;
+  color: var(--white-color);
+  transition: 0.5s;
 }
 
-.nav_link:hover,
-.nav_link.active {
-  background-color: var(--second-color);
+.nav_link:hover {
+  background: var(--second-color);
   color: var(--first-color);
 }
 
@@ -239,24 +247,4 @@ a {
 
 .drop-menu-profile a .user-pic-in {
   margin-right: 8px;
-}
-
-.main-content {
-  margin-left: 200px;
-  padding: 1rem;
-  min-height: 100vh;
-  background: white;
-}
-
-.content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.table-container {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

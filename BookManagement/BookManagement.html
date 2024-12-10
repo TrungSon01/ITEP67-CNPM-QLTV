@@ -95,31 +95,25 @@
               </select>
             </div>
             <div class="dropdown">
-              <button
-                onclick="toggleDropdown()"
-                class="bg-green-500 text-white p-3 rounded-full hover:bg-yellow-500 transition duration-400"
-                title="Tùy chọn"
-              >
-                <i class="fa fa-book-open text-base"></i>
-              </button>
               <div id="bookDropdown" class="dropdown-content">
                 <a href="#" onclick="showAddModal()">
                   <i class="fa fa-plus mr-2"></i>Thêm sách mới
                 </a>
+
                 <a href="#" onclick="showFilterOptions()">
                   <i class="fa fa-filter mr-2"></i>Lọc sách
                 </a>
               </div>
             </div>
           </div>
-          <div class="relative">
-            <i class="fa fa-search text-2xl text-green-500"></i>
+          <div class="relative flex items-center">
             <input
               type="text"
               id="searchInput"
               placeholder="Tìm kiếm sách..."
-              class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             />
+            <i class="fa fa-search absolute left-3 text-gray-400"></i>
           </div>
         </div>
 
@@ -475,12 +469,6 @@
       >
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-medium text-gray-900">Chi tiết sách</h3>
-          <button
-            onclick="closeDetailModal()"
-            class="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </button>
         </div>
         <div class="space-y-4">
           <div class="book-detail-content">

@@ -131,6 +131,25 @@ function updateTableDisplay() {
   const tableBody = document.querySelector("#bookTable tbody");
   tableBody.innerHTML = "";
 
+  if (displayedBooks.length === 0) {
+    // Xóa nội dung bảng khi không có kết quả
+    tableBody.innerHTML = "";
+
+    // Cập nhật thông tin phân trang
+    document.getElementById("startRow").textContent = "0";
+    document.getElementById("endRow").textContent = "0";
+    document.getElementById("totalRows").textContent = "0";
+
+    // Xóa các nút phân trang
+    document.getElementById("pageNumbers").innerHTML = "";
+
+    // Disable nút prev/next
+    document.getElementById("prevPage").disabled = true;
+    document.getElementById("nextPage").disabled = true;
+
+    return;
+  }
+
   displayedBooks.forEach((book, index) => {
     const row = document.createElement("tr");
     row.className = "hover:bg-gray-50 cursor-pointer";
@@ -217,17 +236,47 @@ document.getElementById("rowsPerPage").addEventListener("change", (e) => {
   updateTableDisplay();
 });
 
-// Thêm event listener cho ô tìm kiếm
+// Sửa lại event listener cho ô tìm kiếm
 document.getElementById("searchInput").addEventListener("input", function (e) {
-  const searchTerm = e.target.value.toLowerCase();
+  const searchTerm = e.target.value.toLowerCase().trim();
+  console.log("Searching for:", searchTerm);
+
+  if (searchTerm === "") {
+    // Nếu ô tìm kiếm trống, hiển thị lại tất cả sách
+    filteredBooks = [];
+    currentPage = 1;
+    updateTableDisplay();
+    return;
+  }
 
   // Lọc sách dựa trên từ khóa tìm kiếm
-  filteredBooks = allBooks.filter(
-    (book) =>
-      book.name.toLowerCase().includes(searchTerm) ||
+  filteredBooks = allBooks.filter((book) => {
+    return (
+      book.title.toLowerCase().includes(searchTerm) ||
       book.author.toLowerCase().includes(searchTerm) ||
-      book.category.toLowerCase().includes(searchTerm)
-  );
+      book.category.toLowerCase().includes(searchTerm) ||
+      (book.description && book.description.toLowerCase().includes(searchTerm))
+    );
+  });
+
+  // Nếu không tìm thấy kết quả, xóa hết nội dung bảng
+  if (filteredBooks.length === 0) {
+    const tableBody = document.querySelector("#bookTable tbody");
+    tableBody.innerHTML = "";
+
+    // Cập nhật thông tin phân trang
+    document.getElementById("startRow").textContent = "0";
+    document.getElementById("endRow").textContent = "0";
+    document.getElementById("totalRows").textContent = "0";
+
+    // Xóa các nút phân trang
+    document.getElementById("pageNumbers").innerHTML = "";
+
+    // Disable nút prev/next
+    document.getElementById("prevPage").disabled = true;
+    document.getElementById("nextPage").disabled = true;
+    return;
+  }
 
   currentPage = 1; // Reset về trang 1 khi tìm kiếm
   updateTableDisplay();
@@ -242,7 +291,7 @@ function showBookDetail(id) {
       const detailContent = document.querySelector(".book-detail-content");
       detailContent.innerHTML = `
         <div class="grid grid-cols-2 gap-4">
-          <div class="col-span-2 flex justify-center">
+          <div class="col-span-2 flex justify-left">
             <img src="${book.imageLink || "/Assets/default-book.png"}" 
                  alt="${book.title || book.name}" 
                  class="h-48 w-48 object-cover rounded-lg">
