@@ -1,0 +1,98 @@
+{
+  "users": [
+    {
+      "userId": 2,
+      "accountId": null,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "status": "Active",
+      "borrowedBooks": [
+        {
+          "bookId": 3,
+          "title": "CSS Design Guide",
+          "borrowDate": "2024-10-15",
+          "dueDate": "2024-10-30"
+        },
+        {
+          "bookId": 4,
+          "title": "haha",
+          "borrowDate": "222-2-2",
+          "dueDate": "222-3-3"
+        },
+        {
+          "bookId": 5,
+          "title": "hihi",
+          "borrowDate": "122-3-4",
+          "dueDate": "45-6-7"
+        },
+        {
+          "bookId": 6,
+          "title": "lala",
+          "borrowDate": "6-8-7",
+          "dueDate": "7-8-9"
+        }
+      ],
+      "id": "2"
+    },
+    {
+      "id": "5",
+      "userId": 5,
+      "accountId": "null",
+      "name": "hhaa",
+      "email": "a@gmail.com",
+      "status": "Active",
+      "borrowedBooks": []
+    },
+    {
+      "id": "6",
+      "userId": 6,
+      "accountId": "null",
+      "name": "huhu",
+      "email": "hu@gmail.com",
+      "status": "Active",
+      "borrowedBooks": []
+    },
+    {
+      "id": "7",
+      "userId": 7,
+      "accountId": "null",
+      "name": "yesssss",
+      "email": "y@gmail.com",
+      "status": "Inactive",
+      "borrowedBooks": []
+    }
+  ],
+  "accounts": [
+    {
+      "userId": 1,
+      "id": "1",
+      "accountId": 101,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "status": "Active",
+      "borrowedBooks": [
+        {
+          "bookId": 1,
+          "title": "JavaScript for Beginners",
+          "borrowDate": "2024-11-01",
+          "dueDate": "2024-11-15"
+        },
+        {
+          "bookId": 2,
+          "title": "Learning JSON",
+          "borrowDate": "2024-11-10",
+          "dueDate": "2024-11-20"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "userId": 3,
+      "accountId": 102,
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "status": "Active",
+      "borrowedBooks": []
+    }
+  ]
+}
