@@ -85,65 +85,76 @@
     </div>
     <!-- management user-->
     <div class="container">
-      <h1>Library User Management</h1>
-  
+      <h1>Quản lý người dùng</h1>
+
       <!-- Search Bar -->
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search by UserID or Name"/>
-        <button onclick="searchUser()">Search</button>
+          <input type="text" id="searchInput" placeholder="tìm kiếm bằng Mã hoặc Tên tài khoản" />
+          <button onclick="searchUser()">Tìm</button>
       </div>
-  
-      <!-- Add User Button -->
-      <button id="addUserBtn" onclick="addUser()">Add User</button>
-  
+
       <!-- User Table -->
       <table id="userTable">
-        <thead>
-          <tr>
-            <th>UserID</th>
-            <th>AccountID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Dynamic user rows will be added here via JS -->
-        </tbody>
+          <thead>
+              <tr>
+                  <th>Mã</th>
+                  <th>Tên tài khoản</th>
+                  <th>Email</th>
+                  <th>Họ và Tên</th>
+                  <th>Số điện thoại</th>
+                  <th>Địa chỉ</th>
+                  <th>Thao tác</th>
+              </tr>
+          </thead>
+          <tbody>
+              <!-- Dynamic user rows will be added here via JS -->
+          </tbody>
       </table>
       <!-- Thêm vào cuối bảng để tạo phần phân trang -->
       <div id="pagination" style="margin-top: 10px; text-align: center;"></div>
-  
-    </div>
-  
-    <!-- User Details Modal -->
-    <div id="userDetailsModal" class="modal">
+
+  </div>
+
+  <!-- User Details Modal -->
+  <div id="userDetailsModal" class="modal">
       <div class="modal-content">
-        <span class="close" onclick="closeModal('userDetailsModal')">&times;</span>
-        <h2>User Details</h2>
-        <p><strong>UserID:</strong> <span id="userId"></span></p>
-        <p><strong>Name:</strong> <span id="userName"></span></p>
-  
-        <h3>Borrowed Books</h3>
-        <table id="borrowedBooksTable">
-          <thead>
-            <tr>
-              <th>BookID</th>
-              <th>Title</th>
-              <th>Borrow Date</th>
-              <th>Due Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Borrowed books rows -->
-          </tbody>
-        </table>
-  
-        <button onclick="addBorrowedBook()">Add Book</button>
+          <span class="close" onclick="closeModal('userDetailsModal')">&times;</span>
+          <h2>Quản lý mượn trả sách</h2>
+          <p><strong>Mã:</strong> <span id="userId"></span></p>
+          <p><strong>Tên tài khoản:</strong> <span id="userName"></span></p>
+
+          <h3>Danh sách đang mượn</h3>
+          <table id="borrowedBooksTable">
+              <thead>
+                  <tr>
+                      <th>Mã mượn</th>
+                      <th>Mã sách</th>
+                      <th>Tên sách</th>
+                      <th>Ngày mượn</th>
+                      <th>Hạn mượn</th>
+                      <th>Thao tác</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- Borrowed books rows -->
+              </tbody>
+          </table>
+          <input type="text" id="searchBook" placeholder="Tìm kiếm bằng Mã sách" />
+          <button onclick="findBorrowedBook()">Tìm</button>
       </div>
-    </div>
+  </div>
+
+      <!-- Book Detail-->
+      <div id="bookDetail" class="modal-book" style="display: none;">
+          <div class="modal-content-book">
+              <span class="close" onclick="closeBookModal('bookDetail')">&times;</span>
+              <div class="bookModal-content">
+                  <!--chi tiết sách-->
+              </div>
+              <button onclick="addBorrowedBook()">Mượn</button>
+          </div>
+      </div>
+
     <script src="UserManagement.js"></script>
     <script
       type="module"

@@ -20,6 +20,16 @@ body {
     font-size: xx-large;
     font-weight: bolder;
   }
+  .modal-content>h2 {
+    text-align: center;
+    font-size: x-large;
+    font-weight: bolder;
+  }
+  .modal-content h3 {
+    text-align: center;
+    font-size: large;
+    font-weight: bolder;
+  }
   
   .search-bar {
     margin-bottom: 20px;
@@ -92,6 +102,82 @@ body {
     font-size: 20px;
   }
   
+  .modal-content-book {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 400px;
+    position: relative;
+    margin: 0; 
+    place-items: center;
+  }
+  
+  .modal-content-book .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  
+  .bookModal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    text-align: left;
+  }
+  
+  .bookModal img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  .modal-book {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    place-items: center;
+  }  
+/* Định nghĩa chiều rộng cho từng cột */
+#borrowedBooksTable th:nth-child(1), 
+#borrowedBooksTable td:nth-child(1) {
+  width: 5%; /* Chiều rộng cố định cho Borrow ID */
+}
+
+#borrowedBooksTable th:nth-child(2), 
+#borrowedBooksTable td:nth-child(2) {
+  width: 5%; /* Chiều rộng cố định cho User ID */
+}
+
+#borrowedBooksTable th:nth-child(3), 
+#borrowedBooksTable td:nth-child(3) {
+  width: 40%; /* Chiều rộng cố định cho Book ID */
+}
+
+#borrowedBooksTable th:nth-child(4), 
+#borrowedBooksTable td:nth-child(4) {
+  width: 20%; /* Cột Book Title rộng hơn để chứa tiêu đề sách dài */
+}
+
+#borrowedBooksTable th:nth-child(5), 
+#borrowedBooksTable td:nth-child(5) {
+  width: 20%; /* Chiều rộng cho Borrow Date */
+}
+
+#borrowedBooksTable th:nth-child(6), 
+#borrowedBooksTable td:nth-child(6) {
+  width: 10%; /* Chiều rộng cho Due Date */
+}
+
+
 
 /*home*/
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
