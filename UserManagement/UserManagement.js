@@ -2,48 +2,37 @@
 const API = "http://localhost:3000";
 
 ///////////xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-function deleteUser(userID) {
+
+// Delete a user
+async function deleteUser(userID) {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
-    // Fetch the user details from the API
-    fetch(`${API}/users?userID=${userID}`)
-        .then(userResponse => {
-            if (!userResponse.ok) {
-                alert("User or Account not found.");
-                throw new Error("User or Account not found.");
-            }
-            return userResponse.json();
-        })
-        .then(() => {
-            // If user exists, proceed to delete
-            return fetch(`${API}/users?userID=${userID}`, { method: "DELETE" });
-        })
-        .then(deleteResponse => {
-            if (!deleteResponse.ok) {
-                throw new Error("Failed to delete user");
-            }
-            alert("User deleted successfully!");
-            loadUsers(); // Reload the table after deletion
-        })
-        .catch(error => {
-            console.error("Error deleting entity:", error);
-            alert("Failed to delete entity.");
+    try {
+        const response = await fetch(`${API}/users/${userID}`, {
+            method: "DELETE",
         });
-}
 
+        if (!response.ok) throw new Error("Failed to delete user");
+        alert("User deleted successfully!");
+        loadUsers(); // Reload the table
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        alert("Failed to delete user.");
+    }
+}
 ////xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 
 //////////xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 // Xử lý nút Trả
-function removeBorrowedBook(userID,borrowID, duedate) {
+function removeBorrowedBook(userID,borrowID, dueDate) {
     // Xác nhận trả sách
     if (!confirm("Bạn có chắc chắn muốn trả cuốn sách này không?")) return;
 
     // Tính toán số ngày trễ hạn
     const currentDate = new Date();
-    const dueDateObj = new Date(duedate);
+    const dueDateObj = new Date(dueDate);
     let lateDays = Math.ceil((currentDate - dueDateObj) / (1000 * 60 * 60 * 24)); // Đổi ms sang ngày
 
     if (lateDays > 0) {
@@ -65,7 +54,7 @@ function removeBorrowedBook(userID,borrowID, duedate) {
     }
 
     // Gửi yêu cầu DELETE đến API (nếu cần thiết)
-    fetch(`${API}/borrowBooks?borrowID=${borrowID}`, {
+    fetch(`${API}/borrowBooks/${borrowID}`, {
         method: "DELETE",
     })
         .then(response => {
@@ -122,15 +111,15 @@ function displayBookDetails(book,userID) {
     // Gán thông tin sách vào modal
     const modalContent = bookModal.querySelector(".bookModal-content");
     modalContent.innerHTML = `
-        <img src="${book.imageUrl}" alt="Book Image" style="width:150px; height:auto;"/>
+        <img src="${book.imageLink}" alt="Book Image" style="width:150px; height:auto;"/>
         <h2>${book.title || "Chưa có tiêu đề"}</h2>
         <p><strong>Mã sách:</strong> ${book.bookID}</p>
         <p><strong>Tác giả:</strong> ${book.author || "Không rõ"}</p>
-        <p><strong>Thể loại:</strong> ${book.genre || "Không rõ"}</p>
+        <p><strong>Thể loại:</strong> ${book.category || "Không rõ"}</p>
         <p><strong>Ngày xuất bản:</strong> ${book.publishDate || "Không rõ"}</p>
-        <p><strong>Tổng số lượng:</strong> ${book.totalQuantity || 0}</p>
-        <p><strong>Số còn lại:</strong> ${book.availableQuantity || 0}</p>
-        <p><strong>Đánh giá:</strong> ${book.rating || "Chưa có"}</p>
+        <p><strong>Tổng số lượng:</strong> ${book.quantityTotal || 0}</p>
+        <p><strong>Số còn lại:</strong> ${book.quantityValid || 0}</p>
+        <p><strong>Đánh giá:</strong> ${book.rate || "Chưa có"}</p>
         <p><strong>Mô tả:</strong> ${book.description || "Không có mô tả"}</p>
         <button onclick="addBorrowedBook(${userID})">Mượn</button>
     `;
@@ -145,7 +134,7 @@ function closeBookModal(modalId) {
 fetch(`${API}/borrowBooks`)
     .then(response => response.json())
     .then(borrowedBooks => {
-        currentBorrowID = borrowedBooks.reduce((maxID, book) => Math.max(maxID, book.borrowID), 0) ;
+        currentBorrowID = borrowedBooks.reduce((maxID, book) => Math.max(maxID, book.borrowID), 0);
     });
 ////////////////////////////////////////////////////////////???????
 
@@ -158,10 +147,10 @@ function addBorrowedBook(userID) {
     const bookID = parseInt(bookIDParagraph.textContent.replace("Mã sách:", "").trim(), 10); // Chuyển mã sách thành số nguyên
 
     // Lấy tên sách
-    const booktitle = bookModalContent.querySelector("h2").textContent.trim(); // Lấy tên sách từ thẻ <h2>
+    const title = bookModalContent.querySelector("h2").textContent.trim(); // Lấy tên sách từ thẻ <h2>
 
     // Kiểm tra dữ liệu
-    if (!bookID || !booktitle) {
+    if (!bookID || !title) {
         alert("Không có thông tin sách để mượn!");
         return;
     }
@@ -184,7 +173,7 @@ function addBorrowedBook(userID) {
     row.innerHTML = `
         <td>${currentBorrowID}</td>
         <td>${bookID}</td>
-        <td>${booktitle}</td>
+        <td>${title}</td>
         <td></td> <!-- Sẽ được thay thế bằng borrowDateInput -->
         <td class="duedate"></td>
         <td>
@@ -207,9 +196,9 @@ function addBorrowedBook(userID) {
             userID: userID,
             borrowID: currentBorrowID,
             bookID: bookID,
-            booktitle: booktitle,
-            borrowdate: borrowDate.toISOString().split("T")[0], // Chuyển đổi ngày mượn sang định dạng YYYY-MM-DD
-            duedate: dueDate.toISOString().split("T")[0] // Chuyển đổi ngày trả sang định dạng YYYY-MM-DD
+            title: title,
+            borrowDate: borrowDate.toISOString().split("T")[0], // Chuyển đổi ngày mượn sang định dạng YYYY-MM-DD
+            dueDate: dueDate.toISOString().split("T")[0] // Chuyển đổi ngày trả sang định dạng YYYY-MM-DD
         };
 
         // Lưu vào API borrowBooks
@@ -234,12 +223,10 @@ function addBorrowedBook(userID) {
             alert("Không thể thêm sách vào danh sách mượn. Vui lòng thử lại sau!");
         });
     });
-
 /////////////////?????????????????????????????????????????????????
     // Tăng BorrowID
     currentBorrowID++;
 /////////////////////////////?????????????????????????????????????
-
     // Đóng modal
     closeBookModal("bookDetail");
 }
@@ -276,11 +263,11 @@ function viewUserDetails(userID) {
                 row.innerHTML = `
                     <td>${book.borrowID}</td>
                     <td>${book.bookID}</td>
-                    <td>${book.booktitle}</td>
-                    <td>${book.borrowdate}</td>
-                    <td>${book.duedate}</td>
+                    <td>${book.title}</td>
+                    <td>${book.borrowDate}</td>
+                    <td>${book.dueDate}</td>
                     <td>
-                      <button onclick="removeBorrowedBook(${userID}, ${book.borrowID},${book.duedate})">Trả</button>
+                      <button onclick="removeBorrowedBook(${userID}, ${book.borrowID},${book.dueDate})">Trả</button>
                     </td>
                 `;
                 booksTableBody.appendChild(row);

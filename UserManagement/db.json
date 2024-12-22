@@ -1,30 +1,8 @@
-{"users":[
-  {
-    "userID": 1,
-    "username": "john_doe",
-    "email": "john.doe@example.com",
-    "name": "John Doe",
-    "phone": "123-456-7890",
-    "address": "123 Main St, Springfield"
-  },
-  {
-    "userID": 2,
-    "username": "jane_smith",
-    "email": "jane.smith@example.com",
-    "name": "Jane Smith",
-    "phone": "987-654-3210",
-    "address": "456 Elm St, Metropolis"
-  },
-  {
-    "userID": 3,
-    "username": "michael_brown",
-    "email": "michael.brown@example.com",
-    "name": "Michael Brown",
-    "phone": "555-123-4567",
-    "address": "789 Oak St, Gotham"
-  },
-  {
-      "userID": 4,
+{
+  "users": [
+    {
+      "id": "1",
+      "userID": 1,
       "username": "john_doe",
       "email": "john.doe@example.com",
       "name": "John Doe",
@@ -32,12 +10,40 @@
       "address": "123 Main St, Springfield"
     },
     {
+      "userID": 2,
+      "username": "jane_smith",
+      "email": "jane.smith@example.com",
+      "name": "Jane Smith",
+      "phone": "987-654-3210",
+      "address": "456 Elm St, Metropolis",
+      "id": "b678"
+    },
+    {
+      "userID": 3,
+      "username": "michael_brown",
+      "email": "michael.brown@example.com",
+      "name": "Michael Brown",
+      "phone": "555-123-4567",
+      "address": "789 Oak St, Gotham",
+      "id": "c763"
+    },
+    {
+      "userID": 4,
+      "username": "john_doe",
+      "email": "john.doe@example.com",
+      "name": "John Doe",
+      "phone": "123-456-7890",
+      "address": "123 Main St, Springfield",
+      "id": "a4d8"
+    },
+    {
       "userID": 5,
       "username": "jane_smith",
       "email": "jane.smith@example.com",
       "name": "Jane Smith",
       "phone": "987-654-3210",
-      "address": "456 Elm St, Metropolis"
+      "address": "456 Elm St, Metropolis",
+      "id": "ee37"
     },
     {
       "userID": 6,
@@ -45,70 +51,110 @@
       "email": "michael.brown@example.com",
       "name": "Michael Brown",
       "phone": "555-123-4567",
-      "address": "789 Oak St, Gotham"
+      "address": "789 Oak St, Gotham",
+      "id": "5587"
     }
   ],
- "borrowBooks": [
-  
-      {
-          "borrowID": 1,
-          "userID": 3,
-          "bookID": 201,
-          "booktitle": "Clean Code: A Handbook of Agile Software Craftsmanship",
-          "borrowdate": "2024-12-20",
-          "duedate": "2025-01-19"
-      },
-      {
-          "borrowID": 2,
-          "userID": 2,
-          "bookID": 202,
-          "booktitle": "The Pragmatic Programmer",
-          "borrowdate": "2024-12-18",
-          "duedate": "2025-01-17"
-      },
-      {
-          "borrowID": 3,
-          "userID": 1,
-          "bookID": 203,
-          "booktitle": "Introduction to Algorithms",
-          "borrowdate": "2024-12-15",
-          "duedate": "2025-01-14"
-      },
-      {
-          "borrowID": 4,
-          "userID": 1,
-          "bookID": 204,
-          "booktitle": "Artificial Intelligence: A Modern Approach",
-          "borrowdate": "2024-12-10",
-          "duedate": "2025-01-09"
-      }
+  "borrowBooks": [
+    {
+      "id": "1",
+      "borrowID": 1,
+      "userID": 3,
+      "bookID": 201,
+      "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
+      "borrowDate": "2024-12-20",
+      "dueDate": "2025-01-19"
+    },
+    {
+      "borrowID": 2,
+      "userID": 2,
+      "bookID": 202,
+      "title": "The Pragmatic Programmer",
+      "borrowDate": "2024-12-18",
+      "dueDate": "2025-01-17",
+      "id": "5a38"
+    },
+    {
+      "borrowID": 3,
+      "userID": 1,
+      "bookID": 203,
+      "title": "Introduction to Algorithms",
+      "borrowDate": "2024-12-15",
+      "dueiDate": "2025-01-14",
+      "id": "1929"
+    },
+    {
+      "borrowID": 4,
+      "userID": 1,
+      "bookID": 204,
+      "title": "Artificial Intelligence: A Modern Approach",
+      "borrowDate": "2024-12-10",
+      "dueDate": "2025-01-09",
+      "id": "e492"
+    },
+    {
+      "id": "75f8",
+      "userID": 1,
+      "borrowID": 5,
+      "bookID": 1,
+      "title": "Clean Code",
+      "borrowDate": "2024-12-22",
+      "dueDate": "2025-01-21"
+    },
+    {
+      "id": "eb78",
+      "userID": 1,
+      "borrowID": 6,
+      "bookID": 123,
+      "title": "Clean Code",
+      "borrowDate": "2024-12-22",
+      "dueDate": "2025-01-21"
+    },
+    {
+      "id": "d087",
+      "userID": 1,
+      "borrowID": 7,
+      "bookID": 1,
+      "title": "Clean Code",
+      "borrowDate": "2024-12-22",
+      "dueDate": "2025-01-21"
+    },
+    {
+      "id": "a40a",
+      "userID": 2,
+      "borrowID": 8,
+      "bookID": 1,
+      "title": "Clean Code",
+      "borrowDate": "2024-12-22",
+      "dueDate": "2025-01-21"
+    }
   ],
-  
- "books":[
-  {
+  "books": [
+    {
       "bookID": 123,
       "title": "Clean Code",
       "author": "Robert C. Martin",
-      "genre": "Programming",
+      "category": "Programming",
       "publishDate": "2008-08-01",
-      "totalQuantity": 100,
-      "availableQuantity": 80,
-      "rating": 4.8,
+      "quantityTotal": 100,
+      "quantityValid": 80,
+      "rate": 4.8,
       "description": "A book about writing clean and maintainable code.",
-      "imageUrl": "img/book.png"
-  },
-  {
+      "imageLink": "img/book.png",
+      "id": "5f8d"
+    },
+    {
       "bookID": 1,
       "title": "Clean Code",
       "author": "Robert C. Martin",
-      "genre": "Programming",
+      "category": "Programming",
       "publishDate": "2008-08-01",
-      "totalQuantity": 100,
-      "availableQuantity": 80,
-      "rating": 4.8,
+      "quantityTotal": 100,
+      "quantityValid": 80,
+      "rate": 4.8,
       "description": "A book about writing clean and maintainable code.",
-      "imageUrl": "img/book.png"
-  }
- ]
-
+      "imageLink": "img/book.png",
+      "id": "6acb"
+    }
+  ]
 }
