@@ -216,7 +216,7 @@ app.post("/api/books", (req, res) => {
     res.status(201).json(bookToAdd);
   } catch (error) {
     console.error("Error adding book:", error);
-    res.status(500).json({ message: "L���i khi thêm sách" });
+    res.status(500).json({ message: "Lỗi khi thêm sách" });
   }
 });
 
@@ -322,6 +322,100 @@ app.get("/Report/ReportAnalytics.html", (req, res) => {
 
 //========================================= END RP AND ANALYTICS APIs ================================
 
+// ========================================================== BORROW APIs ================================
+// quân xem API ở đây nhé
+// Thêm vào phần đầu file, sau các require hiện có
+const BORROW_DATA_FILE = path.join(__dirname, "Borrow", "borrow.json");
+
+// Kiểm tra và tạo file borrow.json nếu chưa tồn tại
+if (!fs.existsSync(BORROW_DATA_FILE)) {
+  fs.writeFileSync(
+    BORROW_DATA_FILE,
+    JSON.stringify({ borrows: [] }, null, 2),
+    "utf8"
+  );
+}
+
+// Thêm các helper functions
+function readBorrowData() {
+  try {
+    return JSON.parse(fs.readFileSync(BORROW_DATA_FILE, "utf8"));
+  } catch (error) {
+    console.error("Error reading borrow data:", error);
+    return { borrows: [] };
+  }
+}
+
+function writeBorrowData(data) {
+  try {
+    fs.writeFileSync(BORROW_DATA_FILE, JSON.stringify(data, null, 2), "utf8");
+  } catch (error) {
+    console.error("Error writing borrow data:", error);
+    throw error;
+  }
+}
+
+// Thêm các routes cho Borrow Management
+app.get("/api/borrows", (req, res) => {
+  try {
+    const data = readBorrowData();
+    res.json(data.borrows);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching borrow records" });
+  }
+});
+
+app.post("/api/borrows", (req, res) => {
+  try {
+    const { borrowerName, bookId, borrowDate, returnDate } = req.body;
+    const data = readBorrowData();
+
+    const newBorrow = {
+      id: data.borrows.length + 1,
+      borrowerName,
+      bookId,
+      bookTitle: "", // Sẽ được cập nhật từ book data
+      borrowDate,
+      returnDate,
+      returned: false,
+    };
+
+    // Lấy thông tin sách
+    const bookData = readData_book();
+    const book = bookData.book.find((b) => b.bookId === parseInt(bookId));
+    if (book) {
+      newBorrow.bookTitle = book.title;
+    }
+
+    data.borrows.push(newBorrow);
+    writeBorrowData(data);
+    res.status(201).json(newBorrow);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating borrow record" });
+  }
+});
+
+app.put("/api/borrows/:id/return", (req, res) => {
+  try {
+    const borrowId = parseInt(req.params.id);
+    const data = readBorrowData();
+    const borrowIndex = data.borrows.findIndex((b) => b.id === borrowId);
+
+    if (borrowIndex === -1) {
+      return res.status(404).json({ message: "Borrow record not found" });
+    }
+
+    data.borrows[borrowIndex].returned = true;
+    writeBorrowData(data);
+    res.json(data.borrows[borrowIndex]);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating borrow record" });
+  }
+});
+
+// Thêm route cho static files
+app.use("/Borrow", express.static(path.join(__dirname, "Borrow")));
+// ================================================================ end API BORROW=================
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
