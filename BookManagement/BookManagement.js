@@ -57,12 +57,12 @@ function setupDropdownAndUI() {
       const dropdownButton = document.createElement("div");
       dropdownButton.innerHTML = `
         <div class="relative">
-          <button 
-            class="bg-green-500 text-white p-3 rounded-full hover:bg-yellow-500 transition duration-400"
-            id="bookOptionsButton"
-          >
-            <i class="fa fa-book-open animate-bounce text-base"></i>
-          </button>
+              <button 
+                class="bg-green-500 text-white p-3 rounded-full hover:bg-yellow-500 transition duration-400"
+                id="bookOptionsButton"
+              >
+                <i class="fa fa-book-open animate-bounce text-base"></i>
+              </button>
           <div 
             id="bookDropdownMenu" 
             class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
@@ -179,7 +179,7 @@ function updateTableDisplay() {
         ${formatDate(book.publishDate)}
       </td>
     `;
-    row.addEventListener("click", () => showBookDetail(book.bookId));
+    row.addEventListener("click", () => showBookDetail(book.bookID));
     tableBody.appendChild(row);
   });
 
@@ -257,7 +257,7 @@ function showBookDetail(id) {
                  class="h-48 w-48 object-cover rounded-lg">
           </div>
           <div class="font-medium text-gray-500">Mã sách:</div>
-          <div>${book.bookId || book.id}</div>
+          <div>${book.bookID || book.id}</div>
           <div class="font-medium text-gray-500">Tên sách:</div>
           <div>${book.title || book.name}</div>
           <div class="font-medium text-gray-500">Tác giả:</div>
@@ -290,9 +290,8 @@ function closeDetailModal() {
 }
 
 function handleDelete() {
-  if (currentBookId && confirm("Bạn có chắc muốn xóa sách này?")) {
+  if (currentBookId) {
     deleteBook(currentBookId);
-    closeDetailModal();
   }
 }
 
@@ -395,7 +394,7 @@ function showUpdateModal(id) {
       return response.json();
     })
     .then((book) => {
-      document.getElementById("updateBookId").value = book.bookId;
+      document.getElementById("updateBookId").value = book.bookID;
       document.getElementById("updateName").value = book.title;
       document.getElementById("updateAuthor").value = book.author;
       document.getElementById("updateCategory").value = book.category;
@@ -488,7 +487,7 @@ document
       body: JSON.stringify(updatedBook),
     })
       .then((response) => {
-        if (!response.ok) throw new Error("Lỗi khi cập nh��t sách");
+        if (!response.ok) throw new Error("Lỗi khi cập nhật sách");
         return response.json();
       })
       .then((data) => {
@@ -498,7 +497,7 @@ document
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("Lỗi khi cập   nhật sách: " + error.message);
+        alert("Lỗi khi cập nhật sách: " + error.message);
       });
   });
 
@@ -510,12 +509,13 @@ function deleteBook(id) {
     method: "DELETE",
   })
     .then((response) => {
-      if (!response.ok) throw new Error("Lỗi khi xóa sách");
-      return response.json();
-    })
-    .then((data) => {
+      if (!response.ok) {
+        throw new Error("Lỗi khi xóa sách");
+      }
+      // Không cần đợi response.json() vì DELETE thường không trả về dữ liệu
       alert("Xóa sách thành công!");
-      fetchBooks();
+      closeDetailModal(); // Đóng modal chi tiết sau khi xóa
+      fetchBooks(); // Cập nhật lại danh sách
     })
     .catch((error) => {
       console.error("Error:", error);

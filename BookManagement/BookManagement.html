@@ -556,5 +556,26 @@
     <script src="Filter.js"></script>
     <script src="Search.js"></script>
     <script src="SortBook.js"></script>
+
+    <!-- Initialize -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Initializing...");
+        // Khởi tạo UI và các chức năng
+        if (typeof initializeUI === "function") {
+          initializeUI();
+        }
+        if (typeof initializeSearch === "function") {
+          initializeSearch();
+        }
+        if (typeof initializeSort === "function") {
+          initializeSort();
+        }
+        // Load dữ liệu sách
+        if (typeof fetchBooks === "function") {
+          fetchBooks();
+        }
+      });
+    </script>
   </body>
 </html>
