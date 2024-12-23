@@ -1,3 +1,15 @@
+// Thêm vào đầu file
+window.initializeUI = initializeUI;
+window.fetchBooks = fetchBooks;
+window.updateTableDisplay = updateTableDisplay;
+
+// Thêm event listener khi trang được load
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Page loaded, fetching books...");
+  initializeUI();
+  fetchBooks();
+});
+
 const API_URL = "/api/books";
 
 let currentBookId = null;
@@ -7,18 +19,12 @@ let totalPages = 1;
 let allBooks = [];
 let filteredBooks = [];
 
-// Thêm event listener khi trang được load
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("Page loaded, fetching books...");
-  initializeUI();
-  fetchBooks();
-});
-
-// Khởi tạo giao diện
+// Sửa lại hàm initializeUI
 function initializeUI() {
   console.log("Initializing UI...");
   setupDropdownAndUI();
-  fetchBooks(); // Load dữ liệu ngay sau khi setup UI
+  initializeSearch();
+  // Bỏ fetchBooks() ở đây vì nó sẽ được gọi từ loadContent.js
 }
 
 // Setup UI components
@@ -55,7 +61,7 @@ function setupDropdownAndUI() {
             class="bg-green-500 text-white p-3 rounded-full hover:bg-yellow-500 transition duration-400"
             id="bookOptionsButton"
           >
-            <i class="fa fa-book-open text-base"></i>
+            <i class="fa fa-book-open animate-bounce text-base"></i>
           </button>
           <div 
             id="bookDropdownMenu" 
@@ -233,52 +239,6 @@ document.getElementById("nextPage").addEventListener("click", () => {
 document.getElementById("rowsPerPage").addEventListener("change", (e) => {
   rowsPerPage = parseInt(e.target.value);
   currentPage = 1; // Reset về trang đầu tiên
-  updateTableDisplay();
-});
-
-// Sửa lại event listener cho ô tìm kiếm
-document.getElementById("searchInput").addEventListener("input", function (e) {
-  const searchTerm = e.target.value.toLowerCase().trim();
-  console.log("Searching for:", searchTerm);
-
-  if (searchTerm === "") {
-    // Nếu ô tìm kiếm trống, hiển thị lại tất cả sách
-    filteredBooks = [];
-    currentPage = 1;
-    updateTableDisplay();
-    return;
-  }
-
-  // Lọc sách dựa trên từ khóa tìm kiếm
-  filteredBooks = allBooks.filter((book) => {
-    return (
-      book.title.toLowerCase().includes(searchTerm) ||
-      book.author.toLowerCase().includes(searchTerm) ||
-      book.category.toLowerCase().includes(searchTerm) ||
-      (book.description && book.description.toLowerCase().includes(searchTerm))
-    );
-  });
-
-  // Nếu không tìm thấy kết quả, xóa hết nội dung bảng
-  if (filteredBooks.length === 0) {
-    const tableBody = document.querySelector("#bookTable tbody");
-    tableBody.innerHTML = "";
-
-    // Cập nhật thông tin phân trang
-    document.getElementById("startRow").textContent = "0";
-    document.getElementById("endRow").textContent = "0";
-    document.getElementById("totalRows").textContent = "0";
-
-    // Xóa các nút phân trang
-    document.getElementById("pageNumbers").innerHTML = "";
-
-    // Disable nút prev/next
-    document.getElementById("prevPage").disabled = true;
-    document.getElementById("nextPage").disabled = true;
-    return;
-  }
-
-  currentPage = 1; // Reset về trang 1 khi tìm kiếm
   updateTableDisplay();
 });
 
@@ -528,7 +488,7 @@ document
       body: JSON.stringify(updatedBook),
     })
       .then((response) => {
-        if (!response.ok) throw new Error("Lỗi khi cập nhật sách");
+        if (!response.ok) throw new Error("Lỗi khi cập nh��t sách");
         return response.json();
       })
       .then((data) => {
@@ -538,7 +498,7 @@ document
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("Lỗi khi cập nhật sách: " + error.message);
+        alert("Lỗi khi cập   nhật sách: " + error.message);
       });
   });
 
@@ -593,12 +553,6 @@ window.onclick = function (event) {
     }
   }
 };
-
-// Hàm xử lý lọc sách (có th thêm sau)
-function showFilterOptions() {
-  // Thêm code xử lý lọc sách ở đây
-  alert("Tính năng đang được phát triển");
-}
 
 function showModal(modalId) {
   const modal = document.getElementById(modalId);
