@@ -4,11 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản Lý Sách</title>
+    <!-- tailwind ici  -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- font google ici  -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- icon font ici  -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <!-- icon font ici bản 2 -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
     <style>
       .modal-backdrop {
         position: fixed;
@@ -95,11 +108,15 @@
               </select>
             </div>
             <div class="dropdown">
-              <div id="bookDropdown" class="dropdown-content">
+              <!-- <button
+                class="bg-green-500 text-white p-3 rounded-full hover:bg-yellow-500 transition duration-400"
+              >
+                <i class="fas fa-book-open text-base"></i>
+              </button> -->
+              <div class="dropdown-content">
                 <a href="#" onclick="showAddModal()">
                   <i class="fa fa-plus mr-2"></i>Thêm sách mới
                 </a>
-
                 <a href="#" onclick="showFilterOptions()">
                   <i class="fa fa-filter mr-2"></i>Lọc sách
                 </a>
@@ -327,7 +344,7 @@
       class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
     >
       <div
-        class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white animate-fadeIn"
+        class="relative top-20 mx-auto p-5 border w-[600px] shadow-lg rounded-md bg-white animate-fadeIn"
       >
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-medium text-gray-900">Sửa Thông Tin Sách</h3>
@@ -335,112 +352,132 @@
             onclick="closeUpdateModal()"
             class="text-gray-500 hover:text-gray-700"
           >
-            ✕
+            <i class="fas fa-times"></i>
           </button>
         </div>
         <form id="updateForm" class="space-y-4">
           <input type="hidden" id="updateBookId" />
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Tên sách</label
-            >
-            <input
-              type="text"
-              id="updateName"
-              required
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Tác giả</label
-            >
-            <input
-              type="text"
-              id="updateAuthor"
-              required
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Thể loại</label
-            >
-            <input
-              type="text"
-              id="updateCategory"
-              required
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Mô tả</label>
-            <input
-              type="text"
-              id="updateDescription"
-              required
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Hình ảnh</label
-            >
-            <div class="mt-1 flex items-center">
-              <input
-                type="file"
-                id="updateImageFile"
-                accept="image/*"
-                class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Cột trái -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Tên sách</label
+                >
+                <input
+                  type="text"
+                  id="updateName"
+                  required
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Tác giả</label
+                >
+                <input
+                  type="text"
+                  id="updateAuthor"
+                  required
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Thể loại</label
+                >
+                <input
+                  type="text"
+                  id="updateCategory"
+                  required
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Ngày xuất bản</label
+                >
+                <input
+                  type="date"
+                  id="updateDate"
+                  required
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
             </div>
-            <div class="mt-2">
-              <img
-                id="currentBookImage"
-                src=""
-                alt="Ảnh sách hiện tại"
-                class="h-32 w-32 object-cover rounded-md"
-              />
-              <p class="mt-1 text-sm text-gray-500">Ảnh hiện tại</p>
+
+            <!-- Cột phải -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Tổng số lượng</label
+                >
+                <input
+                  type="number"
+                  id="updateTotalQuantity"
+                  required
+                  min="0"
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Số lượng còn lại</label
+                >
+                <input
+                  type="number"
+                  id="updateAvailableQuantity"
+                  required
+                  min="0"
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700"
+                  >Mô tả</label
+                >
+                <textarea
+                  id="updateDescription"
+                  rows="4"
+                  class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                ></textarea>
+              </div>
             </div>
-            <p class="mt-1 text-sm text-gray-500">
-              Chọn ảnh mới nếu muốn thay đổi (không bắt buộc)
-            </p>
+
+            <!-- Phần hình ảnh -->
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700"
+                >Hình ảnh</label
+              >
+              <div class="mt-1 flex items-center space-x-4">
+                <img
+                  id="currentBookImage"
+                  src=""
+                  alt="Ảnh sách hiện tại"
+                  class="h-32 w-32 object-cover rounded-md border border-gray-300"
+                />
+                <div class="flex-1">
+                  <input
+                    type="file"
+                    id="updateImageFile"
+                    accept="image/*"
+                    class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                  <p class="mt-1 text-sm text-gray-500">
+                    Chọn ảnh mới nếu muốn thay đổi (không bắt buộc)
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Ngày</label>
-            <input
-              type="date"
-              id="updateDate"
-              required
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Tổng số lượng</label
-            >
-            <input
-              type="number"
-              id="updateTotalQuantity"
-              required
-              min="0"
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Số lượng còn lại</label
-            >
-            <input
-              type="number"
-              id="updateAvailableQuantity"
-              required
-              min="0"
-              class="mt-1 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div class="flex justify-end space-x-3 mt-4">
+
+          <div class="flex justify-end space-x-3 mt-6">
             <button
               type="button"
               onclick="closeUpdateModal()"
@@ -450,9 +487,9 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center space-x-2"
             >
-              Cập nhật
+              <i class="fa fa-edit text-white">Cập nhật</i>
             </button>
           </div>
         </form>
@@ -516,5 +553,8 @@
       };
     </script>
     <script src="BookManagement.js"></script>
+    <script src="Filter.js"></script>
+    <script src="Search.js"></script>
+    <script src="SortBook.js"></script>
   </body>
 </html>
